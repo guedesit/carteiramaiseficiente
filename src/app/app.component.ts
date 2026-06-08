@@ -11,6 +11,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
       <header class="topbar">
         <h1>Carteira Mais Eficiente</h1>
         <nav>
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Início</a>
           <a routerLink="/interest-list" routerLinkActive="active">Minha Lista</a>
           <a routerLink="/analysis" routerLinkActive="active">Analise</a>
         </nav>
