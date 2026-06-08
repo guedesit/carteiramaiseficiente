@@ -1,0 +1,148 @@
+<section class="page-shell">
+  <header class="page-header">
+    <h1>Analise Graham + Bazin</h1>
+    <p>Compare preco atual, preco justo e margem de seguranca para decidir entradas.</p>
+    <a routerLink="/interest-list">Voltar para lista</a>
+  </header>
+
+  <div class="card controls">
+    <label>
+      Taxa de retorno desejada (Bazin)
+      <input type="number" min="0.0001" step="0.001" [formControl]="desiredReturnControl" />
+    </label>
+
+    <label>
+      Visao de quarentena
+      <select [formControl]="viewModeControl">
+        <option value="graham">Graham</option>
+        <option value="bazin">Bazin</option>
+      </select>
+    </label>
+
+    <label>
+      Filtro
+      <select [formControl]="statusFilterControl">
+        <option value="all">Todos</option>
+        <option value="eligible">Elegiveis</option>
+        <option value="quarantine">Quarentena</option>
+      </select>
+    </label>
+
+    <label>
+      Ordenar por
+      <select [formControl]="sortControl">
+        <option value="potential">Potencial</option>
+        <option value="ticker">Ticker</option>
+      </select>
+    </label>
+  </div>
+
+  <ng-container *ngIf="vm$ | async as vm">
+    <div class="card empty" *ngIf="!vm.loading && !vm.rows.length">
+      <strong>Nenhuma acao na lista.</strong>
+      <p>Volte para a lista de interesse e adicione tickers para analisar.</p>
+    </div>
+
+    <div class="card" *ngIf="vm.loading">
+      <p>Carregando cotacoes e indicadores...</p>
+    </div>
+
+    <div class="card" *ngIf="!vm.loading && vm.mainRows.length">
+      <h2>Lista principal</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Acao</th>
+              <th>Preco atual</th>
+              <th>Graham</th>
+              <th>Bazin</th>
+              <th>Potencial Graham</th>
+              <th>Margem Bazin</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of vm.mainRows; trackBy: byTicker">
+              <td class="stock-cell">
+                <img *ngIf="row.logoUrl" [src]="row.logoUrl" [alt]="row.ticker" />
+                <div>
+                  <strong>{{ row.ticker }}</strong>
+                  <small *ngIf="row.confidenceLow">Baixa confianca (dividendos &lt; 5)</small>
+                </div>
+              </td>
+              <td>{{ asMoney(row.currentPrice) }}</td>
+              <td>{{ asMoney(row.grahamPrice) }}</td>
+              <td>{{ asMoney(row.bazinPrice) }}</td>
+              <td>
+                <span [class.up]="isUp(row.grahamPotential)" [class.down]="!isUp(row.grahamPotential)">
+                  {{ isUp(row.grahamPotential) ? '↑' : '↓' }} {{ asPercent(row.grahamPotential) }}
+                </span>
+              </td>
+              <td>
+                <span [class.up]="isUp(row.bazinMargin)" [class.down]="!isUp(row.bazinMargin)">
+                  {{ isUp(row.bazinMargin) ? '↑' : '↓' }} {{ asPercent(row.bazinMargin) }}
+                </span>
+              </td>
+              <td><span class="pill eligible">Elegivel</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="!vm.loading && vm.quarantineRows.length">
+      <h2>Quarentena</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Acao</th>
+              <th>Preco atual</th>
+              <th>Graham</th>
+              <th>Bazin</th>
+              <th>Status</th>
+              <th>Observacoes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of vm.quarantineRows; trackBy: byTicker">
+              <td class="stock-cell">
+                <img *ngIf="row.logoUrl" [src]="row.logoUrl" [alt]="row.ticker" />
+                <strong>{{ row.ticker }}</strong>
+              </td>
+              <td>{{ asMoney(row.currentPrice) }}</td>
+              <td>{{ asMoney(row.grahamPrice) }}</td>
+              <td>{{ asMoney(row.bazinPrice) }}</td>
+              <td>
+                <span class="pill" [class.quarantine]="row.status !== 'quote-error'" [class.error]="row.status === 'quote-error'">
+                  {{ row.status === 'quote-error' ? 'Erro de cotacao' : 'Quarentena' }}
+                </span>
+              </td>
+              <td>
+                <small>{{ row.errors.join('; ') }}</small>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="!vm.loading && vm.chart.length">
+      <h2>Grafico: Preco Atual vs Preco-alvo</h2>
+      <div class="chart" *ngIf="vm.chart as chart">
+        <div class="chart-row" *ngFor="let item of chart">
+          <div class="ticker">{{ item.ticker }}</div>
+          <div class="bars">
+            <div class="bar actual" [style.width.%]="chartPercent(item, 'currentPrice', chart)">
+              {{ asMoney(item.currentPrice) }}
+            </div>
+            <div class="bar target" [style.width.%]="chartPercent(item, 'targetPrice', chart)">
+              {{ asMoney(item.targetPrice) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</section>

@@ -1,0 +1,58 @@
+<section class="page-shell">
+  <header class="page-header">
+    <h1>Minha Lista de Interesse</h1>
+    <p>Adicione os ativos e mantenha sua carteira de estudo sincronizada no navegador.</p>
+  </header>
+
+  <div class="card add-card">
+    <label for="searchTicker">Buscar ou digitar ticker</label>
+    <div class="search-row">
+      <input
+        id="searchTicker"
+        type="text"
+        [formControl]="searchControl"
+        placeholder="Ex.: PETR4, VALE3"
+        (keyup.enter)="addTicker(searchControl.value)"
+      />
+      <button type="button" (click)="addTicker(searchControl.value)">Adicionar</button>
+    </div>
+
+    <ul class="suggestions" *ngIf="(suggestions$ | async) as suggestions">
+      <li *ngFor="let item of suggestions" (click)="addFromSuggestion(item)">
+        <span>{{ item.codigo }}</span>
+        <small>{{ item.nome || 'Sem nome' }}</small>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card" *ngIf="state$ | async as state">
+    <div class="card-title-row">
+      <h2>Acoes selecionadas</h2>
+      <a routerLink="/analysis">Ir para Analise</a>
+    </div>
+
+    <p class="metadata">Taxa Bazin atual: {{ formatDesiredReturn(state.desiredReturn) }}</p>
+
+    <div class="empty" *ngIf="!state.tickers.length">
+      <strong>Sua lista esta vazia.</strong>
+      <p>Adicione um ticker para iniciar a analise Graham + Bazin.</p>
+    </div>
+
+    <table *ngIf="state.tickers.length">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Acao</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ticker of state.tickers">
+          <td>{{ ticker }}</td>
+          <td>
+            <button type="button" class="danger" (click)="removeTicker(ticker)">Remover</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,0 +1,176 @@
+.page-shell {
+  display: grid;
+  gap: 1rem;
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.7rem;
+}
+
+.page-header h1,
+.page-header p {
+  margin: 0;
+}
+
+.page-header p {
+  color: var(--muted);
+}
+
+.page-header a {
+  margin-left: auto;
+  color: var(--brand);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1rem;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(12, 44, 66, 0.06);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.75rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.93rem;
+}
+
+input,
+select {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.55rem 0.65rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 780px;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.58rem;
+  text-align: left;
+}
+
+.stock-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.stock-cell img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.stock-cell small {
+  display: block;
+  color: #946200;
+}
+
+.pill {
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.pill.eligible {
+  background: rgba(16, 120, 99, 0.12);
+  color: #0d6d58;
+}
+
+.pill.quarantine {
+  background: rgba(219, 103, 0, 0.15);
+  color: #8e4200;
+}
+
+.pill.error {
+  background: rgba(184, 28, 28, 0.12);
+  color: #9f1239;
+}
+
+.up {
+  color: #0a7f38;
+  font-weight: 700;
+}
+
+.down {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+.chart {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.ticker {
+  font-weight: 700;
+}
+
+.bars {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.bar {
+  min-height: 24px;
+  color: #0a1f2d;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 0.45rem;
+  white-space: nowrap;
+}
+
+.bar.actual {
+  background: rgba(48, 119, 162, 0.3);
+}
+
+.bar.target {
+  background: rgba(33, 174, 129, 0.35);
+}
+
+.empty {
+  text-align: center;
+}
+
+@media (max-width: 780px) {
+  .page-header {
+    align-items: flex-start;
+  }
+
+  .page-header a {
+    margin-left: 0;
+  }
+}
