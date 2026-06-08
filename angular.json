@@ -80,6 +80,9 @@
                   "maximumError": "4kB"
                 }
               ],
+              "optimization": {
+                "fonts": false
+              },
               "outputHashing": "all"
             },
             "development": {
