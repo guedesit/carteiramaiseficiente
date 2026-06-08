@@ -1,0 +1,78 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Inject environment variables
+        run: |
+          cat > src/environments/environment.ts << 'EOF'
+          import { ApiMode } from '../app/models/api.models';
+
+          export interface AppEnvironment {
+            production: boolean;
+            apiMode: ApiMode;
+            userId: string;
+            apiBaseUrl: string;
+            brapiBaseUrl: string;
+            brapiToken: string;
+            investidorBaseUrl: string;
+            cacheTtlMs: number;
+          }
+
+          export const environment: AppEnvironment = {
+            production: true,
+            apiMode: '${{ secrets.API_MODE }}' as ApiMode,
+            userId: '${{ secrets.USER_ID }}',
+            apiBaseUrl: '${{ secrets.API_BASE_URL }}',
+            brapiBaseUrl: 'https://brapi.dev/api',
+            brapiToken: '${{ secrets.BRAPI_TOKEN }}',
+            investidorBaseUrl: 'https://investidor10.com.br/api',
+            cacheTtlMs: 60000,
+          };
+          EOF
+
+      - name: Build
+        run: npx ng build --base-href "/${{ github.event.repository.name }}/"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/first-app/browser
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
