@@ -14,6 +14,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
           <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Início</a>
           <a routerLink="/interest-list" routerLinkActive="active">Minha Lista</a>
           <a routerLink="/analysis" routerLinkActive="active">Analise</a>
+          <a routerLink="/logs" routerLinkActive="active">Logs</a>
         </nav>
       </header>
       <router-outlet></router-outlet>

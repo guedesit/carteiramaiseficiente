@@ -1,0 +1,38 @@
+<section class="page-shell" *ngIf="logs$ | async as logs">
+  <header class="page-header">
+    <h1>Logs de acesso a APIs</h1>
+    <p>Falhas recentes ao consultar os servicos utilizados pela aplicacao.</p>
+  </header>
+
+  <div class="actions">
+    <button type="button" (click)="clear()" [disabled]="!logs.length">Limpar logs</button>
+  </div>
+
+  <div class="card empty" *ngIf="!logs.length">
+    <strong>Nenhuma falha registrada.</strong>
+    <p>Quando alguma API falhar, o evento aparecera aqui.</p>
+  </div>
+
+  <div class="card" *ngIf="logs.length">
+    <table>
+      <thead>
+        <tr>
+          <th>Data/Hora</th>
+          <th>API</th>
+          <th>Status</th>
+          <th>Mensagem</th>
+          <th>URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs">
+          <td>{{ log.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+          <td>{{ log.api }}</td>
+          <td>{{ log.status ?? 'N/A' }}</td>
+          <td>{{ log.message }}</td>
+          <td class="url">{{ log.url }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
